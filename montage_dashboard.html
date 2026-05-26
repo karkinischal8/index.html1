@@ -1,0 +1,1259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MONTAGE — M&E Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:        #f5f2ec;
+  --bg2:       #edeae2;
+  --surface:   #ffffff;
+  --surface2:  #f9f7f3;
+  --border:    #ddd8cd;
+  --border2:   #c9c3b6;
+  --accent:    #2e6b52;
+  --accent-lt: #e8f2ed;
+  --amber:     #b86a14;
+  --amber-lt:  #fef3e6;
+  --blue:      #2c5282;
+  --blue-lt:   #ebf1fa;
+  --red:       #c0392b;
+  --red-lt:    #fdecea;
+  --text:      #1a1a1a;
+  --text2:     #4a4a4a;
+  --muted:     #888070;
+  --done:      #2e6b52;
+  --done-lt:   #e8f2ed;
+  --shadow:    0 1px 4px rgba(0,0,0,0.08);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.10);
+  --radius:    10px;
+  --radius-sm: 6px;
+  --font-h:    'Lora', Georgia, serif;
+  --font-b:    'Inter', sans-serif;
+  --font-m:    'JetBrains Mono', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-b);
+  font-size: 13.5px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+.wrap {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 28px 20px 48px;
+}
+
+/* ── HEADER ── */
+.header {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 22px 28px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  box-shadow: var(--shadow);
+}
+
+.header-left { display: flex; align-items: center; gap: 16px; }
+
+.hicon {
+  width: 48px; height: 48px;
+  background: linear-gradient(135deg, #2e6b52, #4a9c78);
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(46,107,82,0.25);
+}
+
+.htitle {
+  font-family: var(--font-h);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.3px;
+}
+
+.hsubtitle {
+  font-size: 11.5px;
+  color: var(--muted);
+  margin-top: 2px;
+  letter-spacing: 0.4px;
+}
+
+.header-right {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.hbadge {
+  text-align: center;
+  padding: 10px 16px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+
+.hbadge-val {
+  font-family: var(--font-m);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.hbadge-label {
+  font-size: 10px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  margin-top: 1px;
+}
+
+/* ── STATS ── */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.stat {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  box-shadow: var(--shadow);
+  border-left: 4px solid transparent;
+}
+
+.stat.s-green { border-left-color: var(--done); }
+.stat.s-amber { border-left-color: var(--amber); }
+.stat.s-blue  { border-left-color: var(--blue); }
+.stat.s-gray  { border-left-color: var(--border2); }
+
+.stat-val {
+  font-family: var(--font-h);
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.stat.s-green .stat-val { color: var(--done); }
+.stat.s-amber .stat-val { color: var(--amber); }
+.stat.s-blue  .stat-val { color: var(--blue); }
+.stat.s-gray  .stat-val { color: var(--text2); }
+
+.stat-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.7px; margin-top: 4px; }
+
+/* ── PROGRESS BAR ── */
+.prog-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 24px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow);
+}
+
+.prog-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.prog-title { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); }
+.prog-pct { font-family: var(--font-m); font-size: 18px; font-weight: 500; color: var(--accent); }
+
+.prog-bar { background: var(--bg2); border-radius: 99px; height: 9px; overflow: hidden; }
+.prog-fill {
+  height: 100%;
+  border-radius: 99px;
+  background: linear-gradient(90deg, #2e6b52, #4a9c78);
+  transition: width 0.7s cubic-bezier(0.4,0,0.2,1);
+}
+
+/* ── VISUAL ROADMAP ── */
+.roadmap-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 22px 24px 20px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow);
+  overflow-x: auto;
+}
+
+.sec-title {
+  font-family: var(--font-h);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sec-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+}
+
+.vr-track {
+  display: flex;
+  align-items: flex-start;
+  min-width: 820px;
+  position: relative;
+}
+
+.vr-track::before {
+  content: '';
+  position: absolute;
+  top: 16px; left: 16px; right: 16px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--done) 0%, var(--accent) 40%, var(--border2) 70%);
+  z-index: 0;
+}
+
+.vr-node {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+  cursor: pointer;
+}
+
+.vr-dot {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  border: 2px solid var(--border2);
+  background: var(--surface2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px;
+  z-index: 2;
+  transition: transform 0.2s;
+}
+
+.vr-node:hover .vr-dot { transform: scale(1.15); }
+
+.vr-node.vn-done    .vr-dot { background: var(--done);    border-color: var(--done);    color: #fff; box-shadow: 0 2px 8px rgba(46,107,82,0.3); }
+.vr-node.vn-current .vr-dot { background: var(--amber);   border-color: var(--amber);   color: #fff; box-shadow: 0 2px 8px rgba(184,106,20,0.35); animation: pulse 2.2s ease-in-out infinite; }
+.vr-node.vn-upcoming .vr-dot { background: #fff; }
+
+@keyframes pulse {
+  0%,100% { box-shadow: 0 2px 8px rgba(184,106,20,0.3); }
+  50%      { box-shadow: 0 2px 16px rgba(184,106,20,0.6); }
+}
+
+.vr-label { margin-top: 9px; text-align: center; max-width: 88px; }
+.vr-mo { font-family: var(--font-m); font-size: 9px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); font-weight: 500; }
+.vr-node.vn-done    .vr-mo { color: var(--done); }
+.vr-node.vn-current .vr-mo { color: var(--amber); }
+.vr-ev { font-size: 10.5px; font-weight: 500; color: var(--text2); line-height: 1.3; margin-top: 2px; }
+.vr-node.vn-upcoming .vr-ev { color: var(--muted); }
+
+/* ── MAIN GRID ── */
+.main-grid {
+  display: grid;
+  grid-template-columns: 1.55fr 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+/* ── ACTIVITY TRACKER ── */
+.tracker-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.tracker-head {
+  padding: 18px 22px 14px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tracker-body {
+  padding: 6px 10px 14px;
+  max-height: 780px;
+  overflow-y: auto;
+}
+
+.tracker-body::-webkit-scrollbar { width: 5px; }
+.tracker-body::-webkit-scrollbar-track { background: transparent; }
+.tracker-body::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 99px; }
+
+/* month group */
+.mgroup { margin-top: 14px; }
+.mgroup:first-child { margin-top: 6px; }
+
+.mhead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 10px;
+  margin-bottom: 4px;
+}
+
+.mbadge {
+  font-family: var(--font-m);
+  font-size: 9.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 3px 10px;
+  border-radius: 99px;
+  border: 1.5px solid var(--border2);
+  color: var(--muted);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.mbadge.mb-current {
+  background: var(--accent-lt);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.mbadge.mb-past {
+  background: var(--done-lt);
+  border-color: var(--done);
+  color: var(--done);
+}
+
+.mline { flex: 1; height: 1px; background: var(--border); }
+
+/* phase sub-header */
+.phase-sub {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 12px 2px;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  margin: 2px 0 2px;
+}
+
+.phase-sub span {
+  padding: 2px 8px;
+  border-radius: 99px;
+  font-size: 9.5px;
+}
+.ph-1 { background: #e8f0fe; color: #2c5282; }
+.ph-2 { background: #fef9e7; color: #b7770d; }
+.ph-3 { background: #e8f5ee; color: #276749; }
+.ph-4 { background: #fce8e8; color: #9b2b2b; }
+.ph-5 { background: #f3e8ff; color: #6b3fa0; }
+
+/* activity row */
+.arow {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background 0.12s;
+  margin-bottom: 2px;
+  border: 1px solid transparent;
+}
+
+.arow:hover { background: var(--surface2); border-color: var(--border); }
+
+.arow.completed { opacity: 0.6; }
+.arow.completed .aname { text-decoration: line-through; color: var(--muted); }
+
+/* checkbox */
+.cb-wrap { flex-shrink: 0; padding-top: 2px; }
+.cb-inp { display: none; }
+
+.cb-box {
+  width: 18px; height: 18px;
+  border: 1.5px solid var(--border2);
+  border-radius: 4px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--surface);
+  transition: all 0.18s;
+  cursor: pointer;
+}
+
+.cb-box:hover { border-color: var(--accent); }
+.cb-inp:checked + .cb-box { background: var(--done); border-color: var(--done); }
+.cb-box svg { display: none; }
+.cb-inp:checked + .cb-box svg { display: block; }
+
+.abody { flex: 1; min-width: 0; }
+.aname { font-size: 12.5px; font-weight: 500; color: var(--text); line-height: 1.4; }
+.ameta { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 3px; }
+
+.tag {
+  font-family: var(--font-m);
+  font-size: 9px;
+  padding: 2px 7px;
+  border-radius: 99px;
+  font-weight: 500;
+}
+
+.t-key  { background: var(--amber-lt); color: var(--amber); }
+.t-date { background: var(--bg2); color: var(--muted); border: 1px solid var(--border); }
+.t-out  { background: #f3e8ff; color: #6b3fa0; }
+.t-field { background: #e8f5ee; color: #276749; }
+
+/* ── RIGHT COLUMN ── */
+.right-col { display: flex; flex-direction: column; gap: 16px; }
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+}
+
+/* Phase progress */
+.phase-row { margin-bottom: 14px; }
+.phase-row:last-child { margin-bottom: 0; }
+
+.phase-info { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+.phase-name-sm { font-size: 12px; font-weight: 500; color: var(--text2); }
+.phase-pct-sm { font-family: var(--font-m); font-size: 11px; color: var(--muted); }
+
+.ph-bar-bg { background: var(--bg2); border-radius: 99px; height: 7px; overflow: hidden; }
+.ph-bar-fill { height: 100%; border-radius: 99px; transition: width 0.6s ease; }
+.pf-1 { background: linear-gradient(90deg,#4a7cd4,#2c5282); }
+.pf-2 { background: linear-gradient(90deg,#e8a947,#b86a14); }
+.pf-3 { background: linear-gradient(90deg,#4a9c78,#2e6b52); }
+.pf-4 { background: linear-gradient(90deg,#e07070,#c0392b); }
+.pf-5 { background: linear-gradient(90deg,#a070e0,#6b3fa0); }
+
+/* Partners */
+.partner-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 4px; }
+.partner-card {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+}
+
+.partner-name { font-size: 12px; font-weight: 600; color: var(--accent); }
+.partner-loc  { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+/* Outputs */
+.output-item {
+  display: flex; gap: 10px; align-items: flex-start;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.output-item:last-child { border-bottom: none; }
+
+.output-icon {
+  width: 28px; height: 28px;
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+.oi-journal { background: #e8f0fe; }
+.oi-map     { background: #e8f5ee; }
+.oi-plan    { background: #fef9e7; }
+
+.output-text { font-size: 11.5px; color: var(--text2); line-height: 1.4; }
+.output-label { font-size: 9.5px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; margin-bottom: 2px; }
+
+/* Notes */
+.notes-ta {
+  width: 100%;
+  min-height: 100px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  font-family: var(--font-b);
+  font-size: 12.5px;
+  color: var(--text);
+  resize: vertical;
+  outline: none;
+  line-height: 1.6;
+  transition: border-color 0.18s;
+}
+
+.notes-ta::placeholder { color: var(--muted); }
+.notes-ta:focus { border-color: var(--accent); }
+
+.save-btn {
+  margin-top: 8px;
+  background: var(--accent-lt);
+  color: var(--accent);
+  border: 1.5px solid #b8d8cc;
+  padding: 7px 18px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-b);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.save-btn:hover { background: #d4ede5; border-color: var(--accent); }
+
+/* ── FOOTER ── */
+.footer {
+  text-align: center;
+  margin-top: 32px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+  font-size: 11.5px;
+  color: var(--muted);
+}
+
+.footer strong { color: var(--accent); }
+
+/* ── TOAST ── */
+.toast {
+  position: fixed;
+  bottom: 22px; right: 22px;
+  background: var(--done);
+  color: #fff;
+  padding: 9px 18px;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 600;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: all 0.25s;
+  z-index: 999;
+  pointer-events: none;
+  box-shadow: var(--shadow-md);
+}
+
+.toast.show { opacity: 1; transform: translateY(0); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 860px) {
+  .stats { grid-template-columns: repeat(2,1fr); }
+  .main-grid { grid-template-columns: 1fr; }
+  .header { flex-direction: column; align-items: flex-start; }
+  .header-right { width: 100%; justify-content: flex-start; flex-wrap: wrap; }
+  .partner-grid { grid-template-columns: 1fr 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-left">
+    <div class="hicon">🏔️</div>
+    <div>
+      <div class="htitle">MONTAGE — M&amp;E Dashboard</div>
+      <div class="hsubtitle">Cultural Heritage &amp; Climate Resilience · Kanchenjunga Conservation Area, Nepal · Scotland · Norway</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="hbadge">
+      <div class="hbadge-val">Apr 2026</div>
+      <div class="hbadge-label">Start</div>
+    </div>
+    <div class="hbadge">
+      <div class="hbadge-val">Feb 2027</div>
+      <div class="hbadge-label">End</div>
+    </div>
+    <div class="hbadge">
+      <div class="hbadge-val">12 mo.</div>
+      <div class="hbadge-label">Duration</div>
+    </div>
+    <div class="hbadge">
+      <div class="hbadge-val" id="today-txt" style="color:var(--amber);">—</div>
+      <div class="hbadge-label">Today</div>
+    </div>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat s-green">
+    <div class="stat-val" id="cnt-done">0</div>
+    <div class="stat-label">Completed</div>
+  </div>
+  <div class="stat s-amber">
+    <div class="stat-val" id="cnt-cur">—</div>
+    <div class="stat-label">Current Month</div>
+  </div>
+  <div class="stat s-blue">
+    <div class="stat-val" id="cnt-rem">0</div>
+    <div class="stat-label">Remaining</div>
+  </div>
+  <div class="stat s-gray">
+    <div class="stat-val" id="cnt-total">—</div>
+    <div class="stat-label">Total Activities</div>
+  </div>
+</div>
+
+<!-- PROGRESS -->
+<div class="prog-wrap">
+  <div class="prog-top">
+    <span class="prog-title">Overall Project Completion</span>
+    <span class="prog-pct" id="pct-label">0%</span>
+  </div>
+  <div class="prog-bar">
+    <div class="prog-fill" id="prog-fill" style="width:0%"></div>
+  </div>
+</div>
+
+<!-- VISUAL ROADMAP -->
+<div class="roadmap-wrap">
+  <div class="sec-title"><span class="sec-dot"></span> Project Roadmap — Timeline View</div>
+  <div class="vr-track">
+    <div class="vr-node" id="vrn-apr" onclick="scrollTo_('#mg-apr')">
+      <div class="vr-dot">🤝</div>
+      <div class="vr-label">
+        <div class="vr-mo">Apr 2026</div>
+        <div class="vr-ev">Team Meetings</div>
+      </div>
+    </div>
+    <div class="vr-node" id="vrn-may" onclick="scrollTo_('#mg-may')">
+      <div class="vr-dot">🔬</div>
+      <div class="vr-label">
+        <div class="vr-mo">May 2026</div>
+        <div class="vr-ev">Research Design</div>
+      </div>
+    </div>
+    <div class="vr-node" id="vrn-jun" onclick="scrollTo_('#mg-jun')">
+      <div class="vr-dot">📡</div>
+      <div class="vr-label">
+        <div class="vr-mo">Jun 2026</div>
+        <div class="vr-ev">Webinar #1<br><span style="font-size:9px;color:var(--amber)">June 5th</span></div>
+      </div>
+    </div>
+    <div class="vr-node" id="vrn-sep" onclick="scrollTo_('#mg-sep')">
+      <div class="vr-dot">🏕️</div>
+      <div class="vr-label">
+        <div class="vr-mo">Sep 2026</div>
+        <div class="vr-ev">Field Visit &amp; Workshop</div>
+      </div>
+    </div>
+    <div class="vr-node" id="vrn-oct" onclick="scrollTo_('#mg-oct')">
+      <div class="vr-dot">🏛️</div>
+      <div class="vr-label">
+        <div class="vr-mo">Oct 2026</div>
+        <div class="vr-ev">National Workshop</div>
+      </div>
+    </div>
+    <div class="vr-node" id="vrn-nov" onclick="scrollTo_('#mg-nov')">
+      <div class="vr-dot">📊</div>
+      <div class="vr-label">
+        <div class="vr-mo">Nov 2026</div>
+        <div class="vr-ev">Synthesis</div>
+      </div>
+    </div>
+    <div class="vr-node" id="vrn-feb" onclick="scrollTo_('#mg-feb')">
+      <div class="vr-dot">📢</div>
+      <div class="vr-label">
+        <div class="vr-mo">Feb 2027</div>
+        <div class="vr-ev">Dissemination</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN GRID -->
+<div class="main-grid">
+
+  <!-- ACTIVITY TRACKER -->
+  <div class="tracker-card">
+    <div class="tracker-head">
+      <div class="sec-title" style="margin-bottom:0"><span class="sec-dot"></span> Activity Tracker</div>
+      <div style="font-family:var(--font-m);font-size:11px;color:var(--muted)" id="done-of-label">0 / 0 done</div>
+    </div>
+    <div class="tracker-body" id="tracker-body">
+
+      <!-- ═══ APRIL 2026 ═══ -->
+      <div class="mgroup" id="mg-apr">
+        <div class="mhead">
+          <div class="mbadge mb-current">April 2026</div>
+          <div class="mline"></div>
+        </div>
+        <div class="phase-sub"><span class="ph-1">Phase 1 — Co-development of Research</span></div>
+
+        <label class="arow" id="a0">
+          <div class="cb-wrap"><input class="cb-inp" type="checkbox" data-id="0" onchange="tick(this)">
+          <div class="cb-box"><svg width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
+          <div class="abody">
+            <div class="aname">Meeting with UHI Team, Samriddha Pahad Team &amp; Expert</div>
+            <div class="ameta"><span class="tag t-key">Key Milestone</span><span class="tag t-date">Apr 2026</span></div>
+          </div>
+        </label>
+
+        <label class="arow" id="a1">
+          <div class="cb-wrap"><input class="cb-inp" type="checkbox" data-id="1" onchange="tick(this)">
+          <div class="cb-box"><svg width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
+          <div class="abody">
+            <div class="aname">Define shared understanding of cultural heritage across KCA, Scotland &amp; Norway</div>
+            <div class="ameta"><span class="tag t-date">Apr 2026</span></div>
+          </div>
+        </label>
+
+        <label class="arow" id="a2">
+          <div class="cb-wrap"><input class="cb-inp" type="checkbox" data-id="2" onchange="tick(this)">
+          <div class="cb-box"><svg width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
+          <div class="abody">
+            <div class="aname">Develop conceptual model of mountain socio-ecological systems &amp; biocultural interactions</div>
+            <div class="ameta"><span class="tag t-date">Apr 2026</span></div>
+          </div>
+        </label>
+
+        <label class="arow" id="a3">
+          <div class="cb-wrap"><input class="cb-inp" type="checkbox" data-id="3" onchange="tick(this)">
+          <div class="cb-box"><svg width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
+          <div class="abody">
+            <div class="aname">Global Mountain Conversations with regional &amp; international actors</div>
+            <div class="ameta"><span class="tag t-key">Key Milestone</span><span class="tag t-date">Apr 2026</span></div>
+          </div>
+        </label>
+      </div>
+
+      <!-- ═══ MAY 2026 ═══ -->
+      <div class="mgroup" id="mg-may">
+        <div class="mhead">
+          <div class="mbadge mb-current">May 2026</div>
+          <div class="mline"></div>
+        </div>
+        <div class="phase-sub"><span class="ph-1">Phase 1 — Co-development of Research</span></div>
+
+        <label class="arow" id="a4">
+          <div class="cb-wrap"><input class="cb-inp" type="checkbox" data-id="4" onchange="tick(this)">
+          <div class="cb-box"><svg width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
+          <div class="abody">
+            <div class="aname">Research Design Finalization</div>
+            <div class="ameta"><span class="tag t-key">Key Milestone</span><span class="tag t-date">May 2026</span></div>
+          </div>
+        </label>
+
+        <label class="arow" id="a5">
+          <div class="cb-wrap"><input class="cb-inp" type="checkbox" data-id="5" onchange="tick(this)">
+          <div class="cb-box"><svg width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
+          <div class="abody">
+            <div class="aname">Project-specific definition of cultural heritage finalized</div>
+            <div class="ameta"><span class="tag t-date">May 2026</span></div>
+          </div>
+        </label>
+      </div>
+
+      <!-- ═══ JUNE 2026 ═══ -->
+      <div class="mgroup" id="mg-jun">
+        <div class="mhead">
+          <div class="mbadge mb-current">June 2026</div>
+          <div class="mline"></div>
+        </div>
+        <div class="phase-sub"><span class="ph-2">Phase 2 — Local to Global Stakeholder Interviews</span></div>
+
+        <label class="arow" id="a6">
+          <div class="cb-wrap"><input class="cb-inp" type="checkbox" data-id="6" onchange="tick(this)">
+          <div class="cb-box"><svg width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
+          <div class="abody">
+            <div class="aname">First Project Webinar</div>
+            <div class="ameta"><span class="tag t-key">📅 June 5th</span><span class="tag t-date">Jun 2026</span></div>
+          </div>
+        </label>
+
+        <label class="arow" id="a7">
+          <div class="cb-wrap"><input class="cb-inp" type="checkbox" data-id="7" onchange="tick(this)">
+          <div class="cb-box"><svg width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
+          <div class="abody">
+            <div class="aname">Conduct stakeholder interviews — local authorities, municipalities &amp; protected area managers (4 regions)</div>
+            <div class="ameta"><span class="tag t-date">Jun–Sep 2026</span></div>
+          </div>
+        </label>
+
+        <label class="arow" id="a8">
+          <div class="cb-wrap"><input class="cb-inp" type="checkbox" data-id="8" onchange="tick(this)">
+          <div class="cb-box"><svg width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
+          <div class="abody">
+            <div class="aname">Analyse how innovative governance links cultural heritage with climate resilience</div>
+            <div class="ameta"><span class="tag t-date">Jun–Sep 2026</span></div>
+          </div>
+        </label>
+      </div>
+
+      <!-- ═══ SEPTEMBER 2026 ═══ -->
+      <div class="mgroup" id="mg-sep">
+        <div class="mhead">
+          <div class="mbadge">September 2026</div>
+          <div class="mline"></div>
+        </div>
+        <div class="phase-sub"><span class="ph-3">Phase 3 — Fieldwork in KCA, Nepal</span></div>
+
+        <label class="arow" id="a9">
+          <div class="cb-wrap"><input class="cb-inp" type="checkbox" data-id="9" onchange="tick(this)">
+          <div class="cb-box"><svg width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
+          <div class="abody">
+            <div class="aname">Field Visit — FGD &amp; KII across Lelep, Yampudin &amp; Phungling</div>
+            <div class="ameta"><span class="tag t-key">Key Milestone</span><span class="tag t-field">Fieldwork</span><span class="tag t-date">Sep 2026</span></div>
+          </div>
+        </label>
+
+        <label class="arow" id="a10">
+          <div class="cb-wrap"><input class="cb-inp" type="checkbox" data-id="10" onchange="tick(this)">
+          <div class="cb-box"><svg width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
+          <div class="abody">
+            <div class="aname">25 Key Informant Interviews (KII) — indigenous &amp; ethnic groups, youth &amp; elders</div>
+            <div class="ameta"><span class="tag t-field">Fieldwork</span><span class="tag t-date">Sep 2026</span></div>
+          </div>
+        </label>
+
+        <label class="arow" id="a11">
+          <div class="cb-wrap"><input class="cb-inp" type="checkbox" data-id="11" onchange="tick(this)">
+          <div class="cb-box"><svg width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
+          <div class="abody">
+            <div class="aname">3 Focus Group Discussions (FGD) — 6–8 participants each, across 3 settlements</div>
+            <div class="ameta"><span class="tag t-field">Fieldwork</span><span class="tag t-date">Sep 2026</span></div>
+          </div>
+        </label>
+
+        <label class="arow" id="a12">
+          <div class="cb-wrap"><input class="cb-inp" type="checkbox" data-id="12" onchange="tick(this)">
+          <div class="cb-box"><svg width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
+          <div class="abody">
+            <div class="aname">Assess direct impacts of natural hazards (landslides &amp; floods) on tangible &amp; intangible heritage</div>
+            <div class="ameta"><span class="tag t-field">Fieldwork</span><span class="tag t-date">Sep 2026</span></div>
+          </div>
+        </label>
+
+        <label class="arow" id="a13">
+          <div class="cb-wrap"><input class="cb-inp" type="checkbox" data-id="13" onchange="tick(this)">
+          <div class="cb-box"><svg width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
+          <div class="abody">
+            <div class="aname">3 Community Validation Workshops — review findings &amp; co-produce community heritage profiles</div>
+            <div class="ameta"><span class="tag t-field">Fieldwork</span><span class="tag t-date">Sep 2026</span></div>
+          </div>
+        </label>
+
+        <label class="arow" id="a14">
+          <div class="cb-wrap"><input class="cb-inp" type="checkbox" data-id="14" onchange="tick(this)">
+          <div class="cb-box"><svg width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
+          <div class="abody">
+            <div class="aname">Regional Workshop (KCA / Cross-partner)</div>
+            <div class="ameta"><span class="tag t-key">Key Milestone</span><span class="tag t-date">Sep 2026</span></div>
+          </div>
+        </label>
+
+        <label class="arow" id="a15">
+          <div class="cb-wrap"><input class="cb-inp" type="checkbox" data-id="15" onchange="tick(this)">
+          <div class="cb-box"><svg width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
+          <div class="abody">
+            <div class="aname">Interviews completed with local actors — landowners, local bodies &amp; representatives across 4 focal regions</div>
+            <div class="ameta"><span class="tag t-date">Sep 2026</span></div>
+          </div>
+        </label>
+
+        <label class="arow" id="a16">
+          <div class="cb-wrap"><input class="cb-inp" type="checkbox" data-id="16" onchange="tick(this)">
+          <div class="cb-box"><svg width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
+          <div class="abody">
+            <div class="aname">Fieldwork synthesis report drafted</div>
+            <div class="ameta"><span class="tag t-date">Sep 2026</span></div>
+          </div>
+        </label>
+      </div>
+
+      <!-- ═══ OCTOBER 2026 ═══ -->
+      <div class="mgroup" id="mg-oct">
+        <div class="mhead">
+          <div class="mbadge">October 2026</div>
+          <div class="mline"></div>
+        </div>
+        <div class="phase-sub"><span class="ph-4">Phase 4 — International Workshop (Kathmandu)</span></div>
+
+        <label class="arow" id="a17">
+          <div class="cb-wrap"><input class="cb-inp" type="checkbox" data-id="17" onchange="tick(this)">
+          <div class="cb-box"><svg width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
+          <div class="abody">
+            <div class="aname">National &amp; International Workshop — Cultural Heritage in the Making, Kathmandu</div>
+            <div class="ameta"><span class="tag t-key">Key Milestone</span><span class="tag t-date">Oct 2026</span></div>
+          </div>
+        </label>
+
+        <label class="arow" id="a18">
+          <div class="cb-wrap"><input class="cb-inp" type="checkbox" data-id="18" onchange="tick(this)">
+          <div class="cb-box"><svg width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
+          <div class="abody">
+            <div class="aname">Policy discussions with national &amp; international climate stakeholders</div>
+            <div class="ameta"><span class="tag t-date">Oct 2026</span></div>
+          </div>
+        </label>
+
+        <label class="arow" id="a19">
+          <div class="cb-wrap"><input class="cb-inp" type="checkbox" data-id="19" onchange="tick(this)">
+          <div class="cb-box"><svg width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
+          <div class="abody">
+            <div class="aname">Dissemination of preliminary research findings at workshop</div>
+            <div class="ameta"><span class="tag t-date">Oct 2026</span></div>
+          </div>
+        </label>
+      </div>
+
+      <!-- ═══ NOVEMBER 2026 ═══ -->
+      <div class="mgroup" id="mg-nov">
+        <div class="mhead">
+          <div class="mbadge">November 2026</div>
+          <div class="mline"></div>
+        </div>
+        <div class="phase-sub"><span class="ph-5">Phase 5 — Synthesis &amp; Future Planning</span></div>
+
+        <label class="arow" id="a20">
+          <div class="cb-wrap"><input class="cb-inp" type="checkbox" data-id="20" onchange="tick(this)">
+          <div class="cb-box"><svg width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
+          <div class="abody">
+            <div class="aname">Final synthesis of research findings — map heritage–climate relationships</div>
+            <div class="ameta"><span class="tag t-date">Nov 2026</span></div>
+          </div>
+        </label>
+
+        <label class="arow" id="a21">
+          <div class="cb-wrap"><input class="cb-inp" type="checkbox" data-id="21" onchange="tick(this)">
+          <div class="cb-box"><svg width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
+          <div class="abody">
+            <div class="aname">GIS Story Map production &amp; presentation — chart MONTAGE development</div>
+            <div class="ameta"><span class="tag t-out">Output</span><span class="tag t-date">Nov 2026</span></div>
+          </div>
+        </label>
+
+        <label class="arow" id="a22">
+          <div class="cb-wrap"><input class="cb-inp" type="checkbox" data-id="22" onchange="tick(this)">
+          <div class="cb-box"><svg width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
+          <div class="abody">
+            <div class="aname">Plan future partnership scaling &amp; inform Nepal's first UNESCO Biosphere Reserve nomination</div>
+            <div class="ameta"><span class="tag t-key">Key Milestone</span><span class="tag t-date">Nov 2026</span></div>
+          </div>
+        </label>
+
+        <label class="arow" id="a23">
+          <div class="cb-wrap"><input class="cb-inp" type="checkbox" data-id="23" onchange="tick(this)">
+          <div class="cb-box"><svg width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
+          <div class="abody">
+            <div class="aname">Future network development plan &amp; legacy roadmap finalized</div>
+            <div class="ameta"><span class="tag t-date">Nov 2026</span></div>
+          </div>
+        </label>
+      </div>
+
+      <!-- ═══ FEBRUARY 2027 ═══ -->
+      <div class="mgroup" id="mg-feb">
+        <div class="mhead">
+          <div class="mbadge">February 2027</div>
+          <div class="mline"></div>
+        </div>
+        <div class="phase-sub"><span class="ph-5">Phase 5 — Dissemination &amp; Outputs</span></div>
+
+        <label class="arow" id="a24">
+          <div class="cb-wrap"><input class="cb-inp" type="checkbox" data-id="24" onchange="tick(this)">
+          <div class="cb-box"><svg width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
+          <div class="abody">
+            <div class="aname">Final Dissemination Event &amp; Project Synthesis Report</div>
+            <div class="ameta"><span class="tag t-key">Key Milestone</span><span class="tag t-date">Feb 2027</span></div>
+          </div>
+        </label>
+
+        <label class="arow" id="a25">
+          <div class="cb-wrap"><input class="cb-inp" type="checkbox" data-id="25" onchange="tick(this)">
+          <div class="cb-box"><svg width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
+          <div class="abody">
+            <div class="aname">Journal Article 1 — "Cultural heritage in making for climate resilient mountain future: people and nature"</div>
+            <div class="ameta"><span class="tag t-out">Publication</span><span class="tag t-date">Feb 2027</span></div>
+          </div>
+        </label>
+
+        <label class="arow" id="a26">
+          <div class="cb-wrap"><input class="cb-inp" type="checkbox" data-id="26" onchange="tick(this)">
+          <div class="cb-box"><svg width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
+          <div class="abody">
+            <div class="aname">Journal Article 2 — "Cultural heritage in the context of socio-ecological change in the KCA region"</div>
+            <div class="ameta"><span class="tag t-out">Publication</span><span class="tag t-date">Feb 2027</span></div>
+          </div>
+        </label>
+
+        <label class="arow" id="a27">
+          <div class="cb-wrap"><input class="cb-inp" type="checkbox" data-id="27" onchange="tick(this)">
+          <div class="cb-box"><svg width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
+          <div class="abody">
+            <div class="aname">Journal Article 3 — "Ethical place-based community research in practice: community development"</div>
+            <div class="ameta"><span class="tag t-out">Publication</span><span class="tag t-date">Feb 2027</span></div>
+          </div>
+        </label>
+
+      </div><!-- /mg-feb -->
+    </div><!-- /tracker-body -->
+  </div><!-- /tracker-card -->
+
+  <!-- RIGHT COLUMN -->
+  <div class="right-col">
+
+    <!-- Phase Progress -->
+    <div class="card">
+      <div class="sec-title" style="margin-bottom:16px"><span class="sec-dot" style="background:var(--amber)"></span> Phase Progress</div>
+
+      <div class="phase-row">
+        <div class="phase-info">
+          <span class="phase-name-sm">Phase 1 — Co-development</span>
+          <span class="phase-pct-sm" id="pp1">0%</span>
+        </div>
+        <div class="ph-bar-bg"><div class="ph-bar-fill pf-1" id="pb1" style="width:0%"></div></div>
+      </div>
+
+      <div class="phase-row">
+        <div class="phase-info">
+          <span class="phase-name-sm">Phase 2 — Stakeholder Interviews</span>
+          <span class="phase-pct-sm" id="pp2">0%</span>
+        </div>
+        <div class="ph-bar-bg"><div class="ph-bar-fill pf-2" id="pb2" style="width:0%"></div></div>
+      </div>
+
+      <div class="phase-row">
+        <div class="phase-info">
+          <span class="phase-name-sm">Phase 3 — Fieldwork in KCA</span>
+          <span class="phase-pct-sm" id="pp3">0%</span>
+        </div>
+        <div class="ph-bar-bg"><div class="ph-bar-fill pf-3" id="pb3" style="width:0%"></div></div>
+      </div>
+
+      <div class="phase-row">
+        <div class="phase-info">
+          <span class="phase-name-sm">Phase 4 — International Workshop</span>
+          <span class="phase-pct-sm" id="pp4">0%</span>
+        </div>
+        <div class="ph-bar-bg"><div class="ph-bar-fill pf-4" id="pb4" style="width:0%"></div></div>
+      </div>
+
+      <div class="phase-row">
+        <div class="phase-info">
+          <span class="phase-name-sm">Phase 5 — Synthesis &amp; Dissemination</span>
+          <span class="phase-pct-sm" id="pp5">0%</span>
+        </div>
+        <div class="ph-bar-bg"><div class="ph-bar-fill pf-5" id="pb5" style="width:0%"></div></div>
+      </div>
+    </div>
+
+    <!-- Partner Organizations -->
+    <div class="card">
+      <div class="sec-title" style="margin-bottom:14px"><span class="sec-dot" style="background:var(--blue)"></span> Partner Organizations</div>
+      <div class="partner-grid" style="grid-template-columns:1fr 1fr;">
+        <div class="partner-card">
+          <div class="partner-name">UHI</div>
+          <div class="partner-loc">Wester Ross, Scotland</div>
+        </div>
+        <div class="partner-card">
+          <div class="partner-name">Samriddha Pahad</div>
+          <div class="partner-loc">KCA, Nepal</div>
+        </div>
+        <div class="partner-card" style="grid-column:1/-1">
+          <div class="partner-name">Norway Partner</div>
+          <div class="partner-loc">Nordhordland, Norway · Small-scale family farming region</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Expected Outputs -->
+    <div class="card">
+      <div class="sec-title" style="margin-bottom:14px"><span class="sec-dot" style="background:var(--red)"></span> Expected Outputs</div>
+
+      <div class="output-item">
+        <div class="output-icon oi-journal">📄</div>
+        <div>
+          <div class="output-label">3 Peer-Reviewed Journal Articles</div>
+          <div class="output-text">People &amp; Nature · Mountain Research &amp; Development · Community Development</div>
+        </div>
+      </div>
+
+      <div class="output-item">
+        <div class="output-icon oi-map">🗺️</div>
+        <div>
+          <div class="output-label">GIS Story Map</div>
+          <div class="output-text">Charts MONTAGE development &amp; heritage–climate relationships</div>
+        </div>
+      </div>
+
+      <div class="output-item">
+        <div class="output-icon oi-plan">🔗</div>
+        <div>
+          <div class="output-label">UNESCO Biosphere Nomination Support</div>
+          <div class="output-text">Nepal's first UNESCO Biosphere Reserve — KCA community data package</div>
+        </div>
+      </div>
+
+      <div class="output-item">
+        <div class="output-icon oi-plan">🌐</div>
+        <div>
+          <div class="output-label">Future Network Plan</div>
+          <div class="output-text">Legacy roadmap for long-term Europe–Asia research partnership</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Team Notes -->
+    <div class="card">
+      <div class="sec-title" style="margin-bottom:12px"><span class="sec-dot" style="background:var(--muted)"></span> Team Notes</div>
+      <textarea class="notes-ta" id="notes-ta" placeholder="Record decisions, risks, action items or observations…"></textarea>
+      <button class="save-btn" onclick="saveNotes()">Save Notes</button>
+    </div>
+
+  </div><!-- /right-col -->
+</div><!-- /main-grid -->
+
+<!-- FOOTER -->
+<div class="footer">
+  <strong>MONTAGE</strong> · Cultural Heritage &amp; Climate Resilience · Apr 2026 – Feb 2027 &nbsp;·&nbsp; Kanchenjunga Conservation Area · Scotland · Norway
+</div>
+</div><!-- /wrap -->
+
+<div class="toast" id="toast">✓ Saved</div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────────
+// phase → [activity ids]
+const PHASES = {
+  1: [0,1,2,3,4,5],
+  2: [6,7,8],
+  3: [9,10,11,12,13,14,15,16],
+  4: [17,18,19],
+  5: [20,21,22,23,24,25,26,27],
+};
+
+const TOTAL = 28;
+const SK = 'montage_v2';
+let state = { checked:{}, notes:'' };
+
+// ── LOAD ──────────────────────────────────────────────────────────────────
+function load() {
+  try { const r=localStorage.getItem(SK); if(r) state=JSON.parse(r); } catch(e){}
+}
+function save() { localStorage.setItem(SK, JSON.stringify(state)); }
+
+// ── INIT ──────────────────────────────────────────────────────────────────
+function init() {
+  load();
+
+  const now = new Date();
+  document.getElementById('today-txt').textContent =
+    now.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+
+  // Restore checkboxes
+  document.querySelectorAll('.cb-inp').forEach(cb => {
+    const id = +cb.dataset.id;
+    if (state.checked[id]) {
+      cb.checked = true;
+      cb.closest('.arow').classList.add('completed');
+    }
+  });
+
+  if (state.notes) document.getElementById('notes-ta').value = state.notes;
+
+  colorNodes(now);
+  updateStats();
+}
+
+// ── COLOUR ROADMAP NODES ──────────────────────────────────────────────────
+function colorNodes(now) {
+  const v = now.getFullYear()*100 + (now.getMonth()+1);
+  const map = {
+    'vrn-apr': 2026*100+4,
+    'vrn-may': 2026*100+5,
+    'vrn-jun': 2026*100+6,
+    'vrn-sep': 2026*100+9,
+    'vrn-oct': 2026*100+10,
+    'vrn-nov': 2026*100+11,
+    'vrn-feb': 2027*100+2,
+  };
+  Object.entries(map).forEach(([id,nv]) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if      (nv < v)  el.classList.add('vn-done');
+    else if (nv === v) el.classList.add('vn-current');
+    else               el.classList.add('vn-upcoming');
+  });
+}
+
+// ── TICK ──────────────────────────────────────────────────────────────────
+function tick(cb) {
+  const id = +cb.dataset.id;
+  state.checked[id] = cb.checked;
+  cb.closest('.arow').classList.toggle('completed', cb.checked);
+  save();
+  updateStats();
+  showToast(cb.checked ? '✓ Marked complete' : '↩ Marked incomplete');
+}
+
+// ── STATS ──────────────────────────────────────────────────────────────────
+function updateStats() {
+  const done   = Object.values(state.checked).filter(Boolean).length;
+  const remain = TOTAL - done;
+  const pct    = Math.round(done/TOTAL*100);
+
+  document.getElementById('cnt-done').textContent  = done;
+  document.getElementById('cnt-rem').textContent   = remain;
+  document.getElementById('cnt-total').textContent = TOTAL;
+  document.getElementById('pct-label').textContent = pct+'%';
+  document.getElementById('prog-fill').style.width = pct+'%';
+  document.getElementById('done-of-label').textContent = done+' / '+TOTAL+' done';
+
+  // Current month label
+  const mo = new Date().getMonth()+1;
+  const labels = {4:'Apr',5:'May',6:'Jun',7:'Jul',8:'Aug',9:'Sep',10:'Oct',11:'Nov',12:'Dec',1:'Jan',2:'Feb',3:'Mar'};
+  document.getElementById('cnt-cur').textContent = labels[mo]||'—';
+
+  // Phase bars
+  Object.entries(PHASES).forEach(([ph, ids]) => {
+    const d = ids.filter(i=>state.checked[i]).length;
+    const p = Math.round(d/ids.length*100);
+    document.getElementById('pb'+ph).style.width = p+'%';
+    document.getElementById('pp'+ph).textContent = p+'%';
+  });
+}
+
+// ── NOTES ──────────────────────────────────────────────────────────────────
+function saveNotes() {
+  state.notes = document.getElementById('notes-ta').value;
+  save();
+  showToast('✓ Notes saved');
+}
+
+// ── SCROLL ──────────────────────────────────────────────────────────────────
+function scrollTo_(sel) {
+  const el = document.querySelector(sel);
+  if (el) el.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+// ── TOAST ──────────────────────────────────────────────────────────────────
+let tt;
+function showToast(msg) {
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  clearTimeout(tt); tt=setTimeout(()=>t.classList.remove('show'),2000);
+}
+
+init();
+</script>
+</body>
+</html>
